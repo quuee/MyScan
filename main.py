@@ -3,7 +3,7 @@ import cv2
 import datetime
 
 if __name__ == '__main__':
-    img = cv2.imread('./test_image/test3.png')
+    img = cv2.imread('./test_image/test4.jpg')
     # detection(img)
     orig,ratio,screen_cnt = detection2(img)
     warped = four_point_transform(orig,screen_cnt.reshape(4,2)*ratio)
