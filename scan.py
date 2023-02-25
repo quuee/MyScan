@@ -11,16 +11,16 @@ def detection1(img):
     image2 = resize(orig,height = 500)
     
 	# 预处理
-    gray = cv2.cvtColor(image2,cv2.COLOR_BGR2GRAY)
-    blur = cv2.GaussianBlur(gray,(5,5),0)
-    edged = cv2.Canny(blur,75,200)
+    gray = cv2.cvtColor(image2,cv2.COLOR_BGR2GRAY) # 图像二值化
+    blur = cv2.GaussianBlur(gray,(5,5),0) # 高斯滤波
+    edged = cv2.Canny(blur,75,200) # 边缘检测算法
     
-	# 轮廓检测
-    contours = cv2.findContours(edged.copy(),
+	# 轮廓检测 找出所有轮廓点
+    cnts = cv2.findContours(edged.copy(),
 				       cv2.RETR_LIST,
 					   cv2.CHAIN_APPROX_SIMPLE)[0]
     # 根据轮廓面积排序
-    cnts = sorted(contours,key=cv2.contourArea,reverse=True)
+    cnts = sorted(cnts,key=cv2.contourArea,reverse=True)
     
 	#遍历轮廓
     for c in cnts:
@@ -49,11 +49,11 @@ def detection2(img):
     image2 = resize(orig,height = 500)
     
 	# 预处理
-    gray = cv2.cvtColor(image2,cv2.COLOR_BGR2GRAY)
-    blur = cv2.GaussianBlur(gray,(5,5),0)
-    edged = cv2.Canny(blur,75,200)
+    gray = cv2.cvtColor(image2,cv2.COLOR_BGR2GRAY) # 图像二值化
+    blur = cv2.GaussianBlur(gray,(5,5),0) # 高斯滤波
+    edged = cv2.Canny(blur,75,200) # 边缘检测算法
     
-	# 轮廓检测
+	# 轮廓检测，找出所有轮廓
     cnts,hierarchy = cv2.findContours(edged.copy(),
 				       cv2.RETR_LIST,
 					   cv2.CHAIN_APPROX_SIMPLE)
@@ -62,13 +62,12 @@ def detection2(img):
     for c in cnts:
         temp_contours_merge.append(c)
             
-    if screenCnt is None:
-        contours_merge = np.vstack([temp_contours_merge[0],temp_contours_merge[1]])
-        for i in range(2,len(temp_contours_merge)):
-            contours_merge = np.vstack([contours_merge,temp_contours_merge[i]])
-        rect2 = cv2.minAreaRect(contours_merge)
-        box2 = cv2.boxPoints(rect2)
-        screenCnt = box2
+    contours_merge = np.vstack([temp_contours_merge[0],temp_contours_merge[1]])
+    for i in range(2,len(temp_contours_merge)):
+        contours_merge = np.vstack([contours_merge,temp_contours_merge[i]])
+    rect2 = cv2.minAreaRect(contours_merge)
+    box2 = cv2.boxPoints(rect2)
+    screenCnt = box2
 
     return orig,ratio,screenCnt
 
@@ -125,6 +124,7 @@ def four_point_transform(image,pts):
 	)
     
     M = cv2.getPerspectiveTransform(rect,dst)
+    #透视变换
     warped = cv2.warpPerspective(image,M,(maxWidth,maxHeight))
     return warped
     
