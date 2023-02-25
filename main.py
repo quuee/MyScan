@@ -15,8 +15,8 @@ if __name__ == '__main__':
     thresh = cv2.adaptiveThreshold(blur,255,cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 5, 4)
     time = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     result_name = "./result_image/scan_"+time+'.jpg'
-    print(result_name)
+    # print(result_name)
     cv2.imwrite(result_name,thresh)
     cv2.imshow('scanned',thresh)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+    cv2.waitKey(0) # 等待键盘操作
+    cv2.destroyAllWindows() # 销毁所有窗口
