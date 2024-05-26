@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 from scan_calc import order_points,find_dest
 
+# https://learnopencv.com/automatic-document-scanner-using-opencv/
 
 def scan(orig_img):
     # Resize image to workable size
@@ -15,10 +16,11 @@ def scan(orig_img):
         resize_img = cv2.resize(orig_img, None, fx=resize_scale, fy=resize_scale)
     # Create a copy of resized original image for later use
     resize_img2 = resize_img.copy()
+    # 先获取一个空白文档
     # Repeated Closing operation to remove text from the document.
     kernel = np.ones((5, 5), np.uint8)
     resize_img = cv2.morphologyEx(resize_img, cv2.MORPH_CLOSE, kernel, iterations=3)
-    # GrabCut
+    # 使用GrabCut摆脱背景
     mask = np.zeros(resize_img.shape[:2], np.uint8)
     bgdModel = np.zeros((1, 65), np.float64)
     fgdModel = np.zeros((1, 65), np.float64)
@@ -27,16 +29,17 @@ def scan(orig_img):
     mask2 = np.where((mask == 2) | (mask == 0), 0, 1).astype('uint8')
     resize_img = resize_img * mask2[:, :, np.newaxis]
  
+    #边缘检测和轮廓检测
     gray = cv2.cvtColor(resize_img, cv2.COLOR_BGR2GRAY)
-
     ## GaussianBlur Canny 参数不同，扫描结果也不同
     gray = cv2.GaussianBlur(gray, (7, 7), 0)
     # Edge Detection.
     canny = cv2.Canny(gray, 30, 120)
     canny = cv2.dilate(canny, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5)))
- 
     # Finding contours for the detected edges.
     contours, hierarchy = cv2.findContours(canny, cv2.RETR_LIST, cv2.CHAIN_APPROX_NONE)
+
+    # 检测角点
     # Keeping only the largest detected contour.
     page = sorted(contours, key=cv2.contourArea, reverse=True)[:5]
  
@@ -51,21 +54,27 @@ def scan(orig_img):
         # If our approximated contour has four points.
         if len(corners) == 4:
             break
+    
+    # 重新排列检测到的拐角
     # Sorting the corners and converting them to desired shape.
-    print(f'corners before sort:{corners}')
+    # print(f'corners before sort:{corners}')
     corners = sorted(np.concatenate(corners).tolist())
-    print(f'corners sorted:{corners}')
+    # print(f'corners sorted:{corners}')
     # For 4 corner points being detected.
     corners = order_points(corners)
-    print(f'corners order_points:{corners}')
+    # print(f'corners order_points:{corners}')
  
+    # 查找目标坐标 
     destination_corners = find_dest(corners)
-    print(f'destination_corners:{destination_corners}')
+    # print(f'destination_corners:{destination_corners}')
  
     # 放大原来的图片
     corners = np.float32(corners.reshape(4,2) / resize_scale)
     destination_corners = np.float32(destination_corners.reshape(4,2) / resize_scale)
+    
     # h, w = resize_img2.shape[:2]
+
+    # 透视变换和对齐文档
     # Getting the homography.
     M = cv2.getPerspectiveTransform(corners, destination_corners)
     # Perspective transform using homography.
