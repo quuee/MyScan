@@ -77,9 +77,13 @@ while cap.isOpened():
         # 实时预览小图（可缩小用于显示，但不影响保存）
         try:
             # 用于显示的小图（缩放）
-            warped_small = cv2.resize(final_warped, (200, 300), interpolation=cv2.INTER_AREA)
-            display[20:320, w-220:w-20] = warped_small
-            cv2.rectangle(display, (w-220, 20), (w-20, 320), (0,255,0), 2)
+            # 缩略图
+            warped_small = cv2.resize(final_warped, (300, 200), interpolation=cv2.INTER_AREA)
+            # 将缩略图复制到展示图像上
+            # 高度方向上从20像素开始,宽度方向
+            display[20:220, w-320:w-20] = warped_small
+            # 画矩形
+            cv2.rectangle(display, (w-320, 20), (w-20, 220), (0,255,0), 2)
         except:
             pass
 
@@ -99,14 +103,14 @@ while cap.isOpened():
     elif key == ord('s') and final_quad is not None:
         # ✅ 使用动态高分辨率进行透视变换
         final_warped = warp_document.warp_document(orig_frame, final_quad, width=None, height=None)  # 自动计算尺寸
+        # 漂白
         white_bg = background_whitening.whitening_background(final_warped)
 
         now = datetime.now()
         formatted_datetime = now.strftime("%Y-%m-%d_%H-%M-%S")
 
         # 保存高清结果
-        cv2.imwrite(f'{output_dir}/{formatted_datetime}.jpg', final_warped)
-        cv2.imwrite(f'{output_dir}/{formatted_datetime}.jpg', white_bg)
+        cv2.imwrite(f'{output_dir}/camera_{formatted_datetime}.jpg', white_bg)
 
 
 cap.release()
