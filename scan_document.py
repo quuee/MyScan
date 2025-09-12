@@ -1,15 +1,17 @@
 import cv2
 import os
+import numpy as np
 from scan_core import yolov8Detect
 from scan_core import warp_document
 from scan_core import background_whitening
+from scan_core import enhance_image_color_and_sharpness
 from scan_core import table_preservation
 from scan_core import noise_removal
 from scan_core import text_preservation
 
 from datetime import datetime
 
-input_image_path = './test_image/0060.jpg'
+input_image_path = './test_image/0080.jpg'
 output_dir = './output'
 os.makedirs(output_dir, exist_ok=True)
 
@@ -47,8 +49,13 @@ print("✅ 已保存：02_warped_{now}.jpg")
 # cv2.imwrite(f"{output_dir}/04_with_table_{now}.jpg", with_table)
 # print("✅ 已保存：04_with_table_{now}.jpg")
 
+
+enhanced = enhance_image_color_and_sharpness.simple_enhance(warped)
+cv2.imwrite(f"{output_dir}/03_enhanced_{now}.jpg", enhanced)
+print("✅ 已保存：03_enhanced_{now}.jpg")
+
 # 背景漂白
-white_bg = background_whitening.whitening_background(warped,)
+white_bg = background_whitening.whitening_background(enhanced)
 cv2.imwrite(f"{output_dir}/05_white_bg_{now}.jpg", white_bg)
 print("✅ 已保存：05_white_bg_{now}.jpg")
 
@@ -56,4 +63,11 @@ print("✅ 已保存：05_white_bg_{now}.jpg")
 # removeNoise = noise_removal.remove_noise(white_bg)
 # cv2.imwrite(f"{output_dir}/06_removeNoise_{now}.jpg", white_bg)
 # print("✅ 已保存：06_removeNoise_{now}.jpg")
+
+
+
+# chazhi = cv2.resize(enhanced,None,fx=2,fy=2,interpolation=cv2.INTER_LINEAR)
+# cv2.imwrite(f"{output_dir}/08_INTER_NEAREST_{now}.jpg", chazhi)
+# print("✅ 已保存：08_INTER_NEAREST_{now}.jpg")
+
 
