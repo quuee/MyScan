@@ -11,7 +11,7 @@ from scan_core import text_preservation
 
 from datetime import datetime
 
-input_image_path = './test_image/0080.jpg'
+input_image_path = './test_image/0018.jpg'
 output_dir = './output'
 os.makedirs(output_dir, exist_ok=True)
 
