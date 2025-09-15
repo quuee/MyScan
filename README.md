@@ -7,7 +7,7 @@
 ## 入口
 
 - scan_document.py 单张图片
-- camera_scan_document.py 连接手机相机
+- camera_scan_document.py 连接手机 ip 相机， 谷歌商店下载 droidcam
 
 ## TODO
 

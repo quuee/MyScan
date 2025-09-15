@@ -1,8 +1,8 @@
 from ultralytics import YOLO
 import numpy as np
-from scan_core import my_utils
+from scan_util import my_utils
 
-model = YOLO('./model/yolov8s-seg-document.pt')
+model = YOLO('./yolov8/yolov8s-seg-document.pt')
 
 def yolov8Detect(image: np.ndarray) -> np.ndarray :
   # 推理

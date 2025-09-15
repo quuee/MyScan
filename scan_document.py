@@ -1,19 +1,19 @@
 import cv2
 import os
 import numpy as np
-from scan_core import yolov8Detect
-from scan_core import warp_document
-from scan_core import background_whitening
-from scan_core import enhance_image_color_and_sharpness
-from scan_core import table_preservation
-from scan_core import noise_removal
-from scan_core import text_preservation
+from yolov8 import yolov8Detect
+from scan_util import warp_document
+from scan_util import background_whitening
+from scan_util import enhance_image_color_and_sharpness
+from scan_util import table_preservation
+from scan_util import noise_removal
+from scan_util import text_preservation
 
 from datetime import datetime
 
 from unet.denoiser import DocumentDenoiser
 
-input_image_path = './test_image/0060.jpg'
+input_image_path = './test_image/0018.jpg'
 output_dir = './output'
 os.makedirs(output_dir, exist_ok=True)
 
