@@ -6,13 +6,14 @@ from datetime import datetime
 from scan_core import my_utils
 from scan_core import warp_document
 from scan_core import background_whitening
+from scan_core import enhance_image_color_and_sharpness
 
 # ----------------------------
 # 加载模型 & 打开摄像头
 # ----------------------------
 model = YOLO('./model/yolov8s-seg-document.pt')
 
-stream_url = "http://192.168.2.106:4747/video" # 手机ip相机
+stream_url = "http://192.168.2.107:4747/video" # 手机ip相机
 cap = cv2.VideoCapture(stream_url)
 
 output_dir = './output'
@@ -103,6 +104,9 @@ while cap.isOpened():
     elif key == ord('s') and final_quad is not None:
         # ✅ 使用动态高分辨率进行透视变换
         final_warped = warp_document.warp_document(orig_frame, final_quad, width=None, height=None)  # 自动计算尺寸
+
+        # enhance = enhance_image_color_and_sharpness.enhance_image_color_and_sharpness(final_warped)
+
         # 漂白
         white_bg = background_whitening.whitening_background(final_warped)
 
