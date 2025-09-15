@@ -3,10 +3,10 @@ import numpy as np
 import os
 from ultralytics import YOLO
 from datetime import datetime
-from scan_core import my_utils
-from scan_core import warp_document
-from scan_core import background_whitening
-from scan_core import enhance_image_color_and_sharpness
+from scan_util import my_utils
+from scan_util import warp_document
+from scan_util import background_whitening
+from scan_util import enhance_image_color_and_sharpness
 from unet.denoiser import DocumentDenoiser
 
 
