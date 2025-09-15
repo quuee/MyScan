@@ -7,13 +7,20 @@ from scan_core import my_utils
 from scan_core import warp_document
 from scan_core import background_whitening
 from scan_core import enhance_image_color_and_sharpness
+from unet.denoiser import DocumentDenoiser
+
 
 # ----------------------------
 # 加载模型 & 打开摄像头
 # ----------------------------
 model = YOLO('./model/yolov8s-seg-document.pt')
 
-stream_url = "http://192.168.2.107:4747/video" # 手机ip相机
+denoiser = DocumentDenoiser(
+        model_path="./unet/checkpoints/unet_denoise_rgb.pth",
+        device="cpu"  # 或 "cpu"
+    )
+
+stream_url = "http://192.168.2.104:4747/video" # 手机ip相机
 cap = cv2.VideoCapture(stream_url)
 
 output_dir = './output'
@@ -108,13 +115,18 @@ while cap.isOpened():
         # enhance = enhance_image_color_and_sharpness.enhance_image_color_and_sharpness(final_warped)
 
         # 漂白
-        white_bg = background_whitening.whitening_background(final_warped)
+        # white_bg = background_whitening.whitening_background(final_warped)
+
+        # 漂白 去噪
+        denoise_res = denoiser.denoise(final_warped)
+        result_uint8 = (denoise_res * 255).astype(np.uint8)  # [0,1] → [0,255]
+        result_bgr = cv2.cvtColor(result_uint8, cv2.COLOR_RGB2BGR)
 
         now = datetime.now()
         formatted_datetime = now.strftime("%Y-%m-%d_%H-%M-%S")
 
         # 保存高清结果
-        cv2.imwrite(f'{output_dir}/camera_{formatted_datetime}.jpg', white_bg)
+        cv2.imwrite(f'{output_dir}/camera_{formatted_datetime}.jpg', result_bgr)
 
 
 cap.release()

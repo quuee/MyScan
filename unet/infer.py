@@ -6,7 +6,7 @@ from unet import UNet
 import os
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-MODEL_PATH = "./checkpoints/unet_denoise_rgb.pth"
+MODEL_PATH = "./unet/checkpoints/unet_denoise_rgb.pth"
 IMAGE_SIZE = 512
 
 # 加载模型
@@ -15,7 +15,7 @@ model.load_state_dict(torch.load(MODEL_PATH, map_location=DEVICE))
 model.eval()
 
 # 读图
-input_path = "./test_img/test001.jpg"  # 改成你的测试图
+input_path = "./unet/test_img/0002.jpg"  # 改成你的测试图
 original_img = Image.open(input_path).convert("RGB")
 orig_size = original_img.size
 
@@ -55,5 +55,5 @@ with torch.no_grad():
 # 转为 PIL 并恢复原始尺寸
 output_pil = to_pil(output_tensor.cpu().squeeze(0))
 output_pil = output_pil.resize(orig_size, Image.BILINEAR)
-output_pil.save("./test_img/debug_output.png")
+output_pil.save("./unet/test_img/debug_output.png")
 print("\n✅ 已保存: debug_output.png")
