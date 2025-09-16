@@ -13,7 +13,7 @@ from unet.denoiser import DocumentDenoiser
 # ----------------------------
 # 加载模型 & 打开摄像头
 # ----------------------------
-model = YOLO('./model/yolov8s-seg-document.pt')
+model = YOLO('./yolov8/yolov8s-seg-document.pt')
 
 denoiser = DocumentDenoiser(
         model_path="./unet/checkpoints/unet_denoise_rgb.pth",

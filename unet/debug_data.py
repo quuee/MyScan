@@ -3,8 +3,8 @@ from PIL import Image
 import numpy as np
 import os
 
-noisy_path = "data/noisy/2.png"
-clean_path = "data/clean/2.png"
+noisy_path = "./data/noisy/2.png"
+clean_path = "./data/clean/2.png"
 
 noisy = np.array(Image.open(noisy_path).convert("RGB")).astype(np.float32)
 clean = np.array(Image.open(clean_path).convert("RGB")).astype(np.float32)

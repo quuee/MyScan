@@ -7,7 +7,7 @@ from scan_util import background_whitening
 from scan_util import enhance_image_color_and_sharpness
 from scan_util import table_preservation
 from scan_util import noise_removal
-from scan_util import text_preservation
+
 
 from datetime import datetime
 
